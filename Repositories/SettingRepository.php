@@ -1,36 +1,84 @@
 <?php
+
 namespace Modules\Setting\Repositories;
 
-class SettingRepository {
+use Modules\Setting\Models\Setting;
 
-    private static $cachedSettings = [];
+class SettingRepository
+{
 
-    public function get($key)
+    /**
+     * @var mixed|null
+     */
+    protected $cachedSettings = null;
+
+    /**
+     * SettingRepository constructor.
+     */
+    public function __construct()
+    {
+        $this->cachedSettings = cache()->rememberForever('settings', function () {
+            return Setting::all()->keyBy('key');
+        });
+    }
+
+    /**
+     * @param      $key
+     * @param null $default
+     * @return mixed
+     */
+    public function get($key, $default = null)
     {
         if (is_array($key)) {
             return $this->many($key);
         }
 
-        if( !self::$cachedSettings ){
-            self::$cachedSettings = cache()->rememberForever('settings', function(){
-                return \Modules\Setting\Models\Setting::all()->keyBy('key')->toArray();
-            });
-        }
+        $setting = $this->find($key);
 
-        if( $setting = array_get(self::$cachedSettings, $key) ){
-            return $setting['value'];
-        }
-
-        return null;
+        return array_get($setting, 'value', $default);
     }
 
-    public function put()
+    /**
+     * @return array
+     */
+    public function all()
     {
-
+        return array_pluck($this->cachedSettings, 'value', 'key');
     }
 
-    public function many()
+    /**
+     * @return mixed
+     */
+    public function grouped()
     {
+        return $this->cachedSettings->groupBy('group');
+    }
 
+    /**
+     * @param      $keys
+     * @param null $default
+     * @return mixed
+     */
+    private function many($keys, $default = null)
+    {
+        $settings = $this->find($keys);
+        if (!$settings) {
+            return $default;
+        }
+
+        return array_pluck($settings, 'value', 'key');
+    }
+
+    /**
+     * @param $key
+     * @return mixed
+     */
+    private function find($key)
+    {
+        if (is_array($key)) {
+            return $this->cachedSettings->whereIn('key', $key)->all();
+        }
+
+        return $this->cachedSettings->get($key);
     }
 }

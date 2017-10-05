@@ -4,6 +4,7 @@ namespace Modules\Setting\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Database\Eloquent\Factory;
+use Modules\Setting\Repositories\SettingRepository;
 
 class SettingServiceProvider extends ServiceProvider
 {
@@ -35,8 +36,7 @@ class SettingServiceProvider extends ServiceProvider
     public function register()
     {
         $this->app->singleton('setting', function ($app) {
-            $setting = new \Modules\Setting\Repositories\SettingRepository();
-            return $setting;
+            return new SettingRepository();
         });
     }
 
@@ -48,11 +48,9 @@ class SettingServiceProvider extends ServiceProvider
     protected function registerConfig()
     {
         $this->publishes([
-            __DIR__.'/../Config/config.php' => config_path('setting.php'),
+            __DIR__ . '/../Config/config.php' => config_path('setting.php'),
         ], 'config');
-        $this->mergeConfigFrom(
-            __DIR__.'/../Config/config.php', 'setting'
-        );
+        $this->mergeConfigFrom(__DIR__ . '/../Config/config.php', 'setting');
     }
 
     /**
@@ -64,7 +62,7 @@ class SettingServiceProvider extends ServiceProvider
     {
         $viewPath = resource_path('views/modules/setting');
 
-        $sourcePath = __DIR__.'/../Resources/views';
+        $sourcePath = __DIR__ . '/../Resources/views';
 
         $this->publishes([
             $sourcePath => $viewPath
@@ -87,7 +85,7 @@ class SettingServiceProvider extends ServiceProvider
         if (is_dir($langPath)) {
             $this->loadTranslationsFrom($langPath, 'setting');
         } else {
-            $this->loadTranslationsFrom(__DIR__ .'/../Resources/lang', 'setting');
+            $this->loadTranslationsFrom(__DIR__ . '/../Resources/lang', 'setting');
         }
     }
 
@@ -97,7 +95,7 @@ class SettingServiceProvider extends ServiceProvider
      */
     public function registerFactories()
     {
-        if (! app()->environment('production')) {
+        if (!app()->environment('production')) {
             app(Factory::class)->load(__DIR__ . '/Database/factories');
         }
     }
