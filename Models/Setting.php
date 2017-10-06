@@ -10,7 +10,7 @@ class Setting extends Model
     /**
      * @var string
      */
-    protected $table = 'netcore__settings';
+    protected $table = 'netcore_setting__settings';
 
     /**
      * @var array

@@ -46,14 +46,20 @@ class SettingController extends Controller
         if ($setting->type == 'file') {
             $file = $request->file('value');
             $fileName = $setting->key . '.' . $file->getClientOriginalExtension();
-            $file->move(public_path('uploads'), $fileName);
+
+            $path = public_path(config('setting.upload_path'));
+            if (!\File::exists($path)) {
+                \File::makeDirectory($path, 0775, true);
+            }
+
+            $file->move($path, $fileName);
 
             $request->value = $file ? $fileName : $setting->value;
         }
 
         $setting->update(['value' => $request->value]);
 
-        cache()->forget('settings');
+        setting()->clear_cache();
 
         return back()->withSuccess('Successfully saved');
     }

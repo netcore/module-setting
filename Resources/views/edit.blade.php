@@ -1,6 +1,8 @@
 @extends('admin::layouts.master')
 
 @section('content')
+    @include('admin::_partials._messages')
+
     <div class="row">
         <div class="col-md-12">
             <div class="panel panel-inverse">

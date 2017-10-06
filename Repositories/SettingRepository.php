@@ -13,29 +13,69 @@ class SettingRepository
     protected $cachedSettings = null;
 
     /**
+     * @var \Illuminate\Config\Repository|mixed|null
+     */
+    protected $cacheKey = null;
+
+    /**
+     * @var string|null
+     */
+    protected $group = null;
+
+    /**
      * SettingRepository constructor.
      */
     public function __construct()
     {
-        $this->cachedSettings = cache()->rememberForever('settings', function () {
+        $this->cacheKey = config('setting.cache_key');
+        $this->cachedSettings = cache()->rememberForever($this->cacheKey, function () {
             return Setting::all()->keyBy('key');
         });
     }
 
     /**
-     * @param      $key
+     * @param $method
+     * @param $args
+     * @return $this
+     */
+    public function __call($method, $args)
+    {
+        $this->group = $method;
+
+        return $this;
+    }
+
+    /**
+     * @param      $keys
      * @param null $default
      * @return mixed
      */
-    public function get($key, $default = null)
+    public function get($keys, $default = null)
     {
-        if (is_array($key)) {
-            return $this->many($key);
+        $settings = $this->cachedSettings;
+
+        if ($group = $this->group) {
+            $settings = $settings->where('group', $group);
         }
 
-        $setting = $this->find($key);
+        if (is_array($keys)) {
+            $array = [];
+            foreach ($keys as $key => $value) {
+                $array[$value] = array_get(
+                    $settings->get($value),
+                    'value',
+                    is_array($default) ? (isset($default[$key]) ? $default[$key] : null) : $default
+                );
+            }
 
-        return array_get($setting, 'value', $default);
+            return $array;
+        }
+
+        return array_get(
+            $settings->get($keys),
+            'value',
+            is_array($default) ? (isset($default[0]) ? $default[0] : null) : $default
+        );
     }
 
     /**
@@ -43,7 +83,12 @@ class SettingRepository
      */
     public function all()
     {
-        return array_pluck($this->cachedSettings, 'value', 'key');
+        $settings = $this->cachedSettings;
+        if ($this->group) {
+            $settings = $settings->where('group', $this->group);
+        }
+
+        return $settings->pluck('value', 'key')->toArray();
     }
 
     /**
@@ -55,30 +100,10 @@ class SettingRepository
     }
 
     /**
-     * @param      $keys
-     * @param null $default
-     * @return mixed
+     * @return bool
      */
-    private function many($keys, $default = null)
+    public function clear_cache()
     {
-        $settings = $this->find($keys);
-        if (!$settings) {
-            return $default;
-        }
-
-        return array_pluck($settings, 'value', 'key');
-    }
-
-    /**
-     * @param $key
-     * @return mixed
-     */
-    private function find($key)
-    {
-        if (is_array($key)) {
-            return $this->cachedSettings->whereIn('key', $key)->all();
-        }
-
-        return $this->cachedSettings->get($key);
+        return cache()->forget($this->cacheKey);
     }
 }
