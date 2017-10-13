@@ -21,6 +21,7 @@ class CreateNetcoreSettingSettingsTable extends Migration
             $table->text('value')->nullable();
             $table->enum('type', [
                 'text',
+                'textarea',
                 'select',
                 'checkbox',
                 'file'

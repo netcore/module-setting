@@ -20,7 +20,7 @@
                         @elseif ($setting->type == 'file')
                             {!! Form::file('value', $setting->getAttributesData()) !!}
                         @else
-                            {!! Form::text('value', $setting->value, $setting->getAttributesData()) !!}
+                            {!! Form::{$setting->type}('value', $setting->value, $setting->getAttributesData()) !!}
                         @endif
                     </div>
                     <button type="submit" class="btn btn-success"><i class="fa fa-save"></i> Save</button>

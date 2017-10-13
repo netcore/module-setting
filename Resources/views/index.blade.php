@@ -12,7 +12,7 @@
                         <ul class="nav nav-tabs" role="tablist">
                             @foreach (setting()->grouped() as $group => $settings)
                                 <li role="presentation" class="{{ $loop->first ? 'active' : '' }}">
-                                    <a href="#{{ $group }}" aria-controls="global" role="tab" data-toggle="tab">{{ ucfirst($group) }}</a>
+                                    <a href="#{{ $group }}" aria-controls="global" role="tab" data-toggle="tab">{{ ucfirst(preg_replace('/-+/', ' ', $group)) }}</a>
                                 </li>
                             @endforeach
                         </ul>
@@ -33,13 +33,11 @@
                                         <tbody>
                                         @foreach($settings as $setting)
                                             <tr>
-                                                <td width="30%">{{ $setting['key'] }}</td>
-                                                <td>{{ $setting['name'] }}</td>
-                                                <td>
-                                                    {{ $setting['value'] }}
-                                                </td>
+                                                <td width="30%">{{ $setting->key }}</td>
+                                                <td>{{ $setting->name }}</td>
+                                                <td>{{ str_limit($setting->value, 100) }}</td>
                                                 <td width="10%" class="text-center">
-                                                    <a href="{{ route('admin::setting.edit', $setting['id']) }}" class="btn btn-sm btn-warning"><i class="fa fa-edit"></i> Edit</a>
+                                                    <a href="{{ route('admin::setting.edit', $setting) }}" class="btn btn-sm btn-warning"><i class="fa fa-edit"></i> Edit</a>
                                                 </td>
                                             </tr>
                                         @endforeach

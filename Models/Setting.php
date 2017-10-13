@@ -77,6 +77,7 @@ class Setting extends Model
     {
         $classes = [
             'text'     => 'form-control',
+            'textarea' => 'form-control',
             'checkbox' => '',
             'file'     => 'form-control',
             'select'   => 'form-control'
