@@ -48,7 +48,7 @@ class SettingServiceProvider extends ServiceProvider
     protected function registerConfig()
     {
         $this->publishes([
-            __DIR__ . '/../Config/config.php' => config_path('setting.php'),
+            __DIR__ . '/../Config/config.php' => config_path('netcore/module-setting.php'),
         ], 'config');
         $this->mergeConfigFrom(__DIR__ . '/../Config/config.php', 'setting');
     }
