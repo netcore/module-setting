@@ -27,6 +27,13 @@ class SettingsTableSeeder extends Seeder
             ],
             [
                 'group' => 'custom-scripts',
+                'name'  => 'Google Analytics client ID',
+                'key'   => 'google-analytics-client-id',
+                'value' => '',
+                'type'  => 'text',
+            ],
+            [
+                'group' => 'custom-scripts',
                 'name'  => 'Google Analytics script',
                 'key'   => 'google-analytics-script',
                 'value' => '',
