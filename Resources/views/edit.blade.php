@@ -20,7 +20,7 @@
                         @elseif ($setting->type == 'file')
                             {!! Form::file('value', $setting->getAttributesData()) !!}
                         @else
-                            @if($mediaModule && $mediaModule->enabled())
+                            @if($mediaModule && $mediaModule->enabled() && $setting->group == 'url')
                                 <div class="row">
                                     <div class="col-md-10">
                                         {!! Form::{$setting->type}('value', $setting->value, $setting->getAttributesData()) !!}
