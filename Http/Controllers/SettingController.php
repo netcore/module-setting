@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
 use Modules\Setting\Models\Setting;
+use Nwidart\Modules\Facades\Module;
 
 class SettingController extends Controller
 {
@@ -26,7 +27,8 @@ class SettingController extends Controller
      */
     public function edit(Setting $setting)
     {
-        return view('setting::edit', compact('setting'));
+        $mediaModule = Module::find('media');
+        return view('setting::edit', compact('setting', 'mediaModule'));
     }
 
     /**

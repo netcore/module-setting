@@ -20,7 +20,18 @@
                         @elseif ($setting->type == 'file')
                             {!! Form::file('value', $setting->getAttributesData()) !!}
                         @else
-                            {!! Form::{$setting->type}('value', $setting->value, $setting->getAttributesData()) !!}
+                            @if($mediaModule && $mediaModule->enabled())
+                                <div class="row">
+                                    <div class="col-md-10">
+                                        {!! Form::{$setting->type}('value', $setting->value, $setting->getAttributesData()) !!}
+                                    </div>
+                                    <div class="col-md-2">
+                                        <button class="btn btn-primary js-file-manager" disabled>Select from storage</button>
+                                    </div>
+                                </div>
+                            @else
+                                {!! Form::{$setting->type}('value', $setting->value, $setting->getAttributesData()) !!}
+                            @endif
                         @endif
                     </div>
                     <button type="submit" class="btn btn-success"><i class="fa fa-save"></i> Save</button>
