@@ -1,6 +1,28 @@
 ### Installation
 
- - TODO
+ - Require this package using composer
+```
+    composer require netcore/module-setting
+```
+
+ - Publish configuration
+```
+    php artisan module:publish-config Setting
+```
+ 
+### Configuration
+
+ - Cache key name
+```
+    // Default key is - settings
+    'cache_key' => 'settings'
+```
+
+ - Upload path for file type
+```
+    // Default path is - /uploads/settings
+    'upload_path' => '/uploads/settings'
+```
 
 ### Seeding settings
 
@@ -13,7 +35,7 @@
             'name'  => 'Name',
             'key'   => 'key',
             'value' => 'value',
-            'type'  => 'select', // Available types: text, select, checkbox, file
+            'type'  => 'select', // Available types: text, textarea, select, checkbox, file
             'meta'  => [
                 // Here you can specify what HTML attributes you want for this input
                 'attributes' => [
@@ -38,8 +60,8 @@
 
 ### Usage
 
- - Fetch setting by key
 ```php
+    // Fetch setting by key
     setting()->get('key');
     
     // Optionally you can pass second parameter as the default value if the setting is not found
@@ -47,9 +69,10 @@
     
     // You can pass key variable as array to get multiple settings at once
     setting()->get(['one', 'two']);
-```
-
-- Fetch all settings
-```php
+    
+    // Optionally you can pass second parameter as the default value as string or array and it will set defaults respectively
+    setting()->get(['one', 'two'], ['default_one', 'default_two']);
+    
+    // Fetch all settings
     setting()->all();
 ```
