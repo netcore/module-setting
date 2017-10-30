@@ -37,7 +37,7 @@
                                                 <td>{{ $setting->name }}</td>
                                                 <td>{{ str_limit($setting->value, 100) }}</td>
                                                 <td width="10%" class="text-center">
-                                                    <a href="{{ route('admin::setting.edit', $setting) }}" class="btn btn-sm btn-warning"><i class="fa fa-edit"></i> Edit</a>
+                                                    <a href="{{ route('admin::setting.edit', $setting) }}" class="btn btn-xs btn-primary"><i class="fa fa-edit"></i> Edit</a>
                                                 </td>
                                             </tr>
                                         @endforeach

@@ -21,7 +21,8 @@ class Setting extends Model
         'group',
         'type',
         'name',
-        'meta'
+        'meta',
+        'has_manager'
     ];
 
     /**
