@@ -18,7 +18,6 @@ class CreateNetcoreSettingSettingsTable extends Migration
             $table->string('group')->nullable();
             $table->string('name')->nullable();
             $table->string('key')->unique()->index();
-            $table->text('value')->nullable();
             $table->enum('type', [
                 'text',
                 'textarea',
@@ -27,7 +26,19 @@ class CreateNetcoreSettingSettingsTable extends Migration
                 'file'
             ])->default('text');
             $table->text('meta')->nullable();
+            $table->boolean('has_manager')->default(0);
+            $table->boolean('is_translatable')->default(0);
             $table->timestamps();
+        });
+
+        Schema::create('netcore_setting__setting_translations', function (Blueprint $table) {
+            $table->increments('id');
+
+            $table->unsignedInteger('setting_id');
+            $table->foreign('setting_id')->references('id')->on('netcore_setting__settings')->onDelete('cascade');
+
+            $table->string('locale')->index();
+            $table->mediumText('value')->nullable();
         });
     }
 
@@ -38,6 +49,7 @@ class CreateNetcoreSettingSettingsTable extends Migration
      */
     public function down()
     {
+        Schema::dropIfExists('netcore_setting__setting_translations');
         Schema::dropIfExists('netcore_setting__settings');
     }
 }

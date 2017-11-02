@@ -35,7 +35,22 @@
                                             <tr>
                                                 <td width="30%">{{ $setting->key }}</td>
                                                 <td>{{ $setting->name }}</td>
-                                                <td>{{ str_limit($setting->value, 100) }}</td>
+                                                <td>
+                                                    @if($setting->type == 'checkbox')
+                                                        {{ $setting->value ? 'Yes' : 'No' }}
+                                                    @else
+                                                        @if ($setting->is_translatable)
+                                                            @php
+                                                                $translations = $setting->translations->pluck('value', 'locale')->toArray();
+                                                            @endphp
+                                                            @foreach(\Netcore\Translator\Helpers\TransHelper::getAllLanguages() as $language)
+                                                                <b>{{ strtoupper($language->iso_code) }}</b>: {{ isset($translations[$language->iso_code]) ? str_limit($translations[$language->iso_code], 100) : 'Not specified' }}<br>
+                                                            @endforeach
+                                                        @else
+                                                            {{ str_limit($setting->value, 100) }}
+                                                        @endif
+                                                    @endif
+                                                </td>
                                                 <td width="10%" class="text-center">
                                                     <a href="{{ route('admin::setting.edit', $setting) }}" class="btn btn-xs btn-primary"><i class="fa fa-edit"></i> Edit</a>
                                                 </td>

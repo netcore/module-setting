@@ -1,0 +1,1 @@
+{!! Form::textarea(isset($language) ? 'translations['.$language->iso_code.'][value]' : 'value', isset($language) ? trans_model($setting, $language, 'value') : $setting->value, $setting->getAttributesData()) !!}

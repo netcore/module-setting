@@ -60,22 +60,16 @@ class SettingRepository
 
         if (is_array($keys)) {
             $array = [];
-            foreach ($keys as $key => $value) {
-                $array[$value] = array_get(
-                    $settings->get($value),
-                    'value',
-                    is_array($default) ? (isset($default[$key]) ? $default[$key] : null) : $default
-                );
+            foreach ($keys as $index => $key) {
+                $setting = $settings->get($key);
+                $array[$value] = $setting ? $setting->getValue() : (is_array($default) ? (isset($default[$index]) ? $default[$index] : null) : $default);
             }
 
             return $array;
         }
 
-        return array_get(
-            $settings->get($keys),
-            'value',
-            is_array($default) ? (isset($default[0]) ? $default[0] : null) : $default
-        );
+        $setting = $settings->get($keys);
+        return $setting ? $setting->getValue() : (is_array($default) ? (isset($default[$index]) ? $default[$index] : null) : $default);
     }
 
     /**

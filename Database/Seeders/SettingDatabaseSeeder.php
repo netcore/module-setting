@@ -17,6 +17,6 @@ class SettingDatabaseSeeder extends Seeder
         Model::unguard();
 
         $this->call(MenuTableSeeder::class);
-        $this->call(SettingsTableSeeder::class);
+        $this->call(SettingTableSeeder::class);
     }
 }

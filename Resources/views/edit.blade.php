@@ -18,7 +18,7 @@
                     {!! Form::open(['route' => ['admin::setting.update', $setting], 'method' => 'PATCH', 'files' => true]) !!}
                     <div class="form-group no-margin-hr">
                         <label>{{ $setting->name }}</label><br>
-                        @include('setting::_partials._field')
+                        @include('setting::_form')
                     </div>
                     <button type="submit" class="btn btn-success pull-right"><i class="fa fa-save"></i> Save</button>
                     {!! Form::close() !!}

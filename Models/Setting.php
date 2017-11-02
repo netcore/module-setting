@@ -2,10 +2,14 @@
 
 namespace Modules\Setting\Models;
 
+use Dimsav\Translatable\Translatable;
 use Illuminate\Database\Eloquent\Model;
+use Modules\Admin\Traits\SyncTranslations;
+use Modules\Setting\Translations\SettingTranslation;
 
 class Setting extends Model
 {
+    use Translatable, SyncTranslations;
 
     /**
      * @var string
@@ -17,12 +21,12 @@ class Setting extends Model
      */
     protected $fillable = [
         'key',
-        'value',
         'group',
-        'type',
         'name',
+        'type',
         'meta',
-        'has_manager'
+        'has_manager',
+        'is_translatable'
     ];
 
     /**
@@ -31,6 +35,23 @@ class Setting extends Model
     protected $casts = [
         'meta' => 'array'
     ];
+
+    /**
+     * @var string
+     */
+    public $translationModel = SettingTranslation::class;
+
+    /**
+     * @var array
+     */
+    public $translatedAttributes = [
+        'value'
+    ];
+
+    /**
+     * @var array
+     */
+    protected $with = ['translations'];
 
     /**
      * @return array
@@ -69,6 +90,27 @@ class Setting extends Model
         }
 
         return $options;
+    }
+
+    /**
+     * @param $type
+     * @return bool
+     */
+    public function is($type)
+    {
+        return $this->type === $type;
+    }
+
+    /**
+     * @return string
+     */
+    public function getValue()
+    {
+        if ($this->is('file')) {
+            return asset($this->value);
+        }
+
+        return $this->value;
     }
 
     /**

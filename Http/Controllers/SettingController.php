@@ -28,6 +28,7 @@ class SettingController extends Controller
     public function edit(Setting $setting)
     {
         $mediaModule = Module::find('media');
+
         return view('setting::edit', compact('setting', 'mediaModule'));
     }
 
@@ -39,27 +40,65 @@ class SettingController extends Controller
      */
     public function update(Request $request, Setting $setting)
     {
+        $translations = $request->get('translations', []);
+
+        // Set universal value across all languages
+        if (!$setting->is_translatable && !$setting->is('file')) {
+            foreach (get_all_languages() as $language) {
+                $translations[$language->iso_code] = [
+                    'value' => $request->get('value', '')
+                ];
+            }
+        }
+
         // Checkbox
-        if ($setting->type == 'checkbox') {
-            $request->value = $request->has('value');
+        if ($setting->is('checkbox')) {
+            foreach ($translations as $languageId => &$data) {
+                $data['value'] = array_get($data, 'value', 0) ?: 0;
+            }
         }
 
         // File
-        if ($setting->type == 'file') {
-            $file = $request->file('value');
-            $fileName = $setting->key . '.' . $file->getClientOriginalExtension();
+        if ($setting->is('file')) {
+            $files = $setting->is_translatable ? $request->file('translations') : $request->file('value');
 
             $path = public_path(config('setting.upload_path'));
             if (!\File::exists($path)) {
                 \File::makeDirectory($path, 0775, true);
             }
 
-            $file->move($path, $fileName);
+            if ($setting->is_translatable) {
+                foreach (get_all_languages() as $language) {
+                    $file = isset($files[$language->iso_code]) ? $files[$language->iso_code]['value'] : null;
+                    if (!$file) {
+                        continue;
+                    }
 
-            $request->value = $file ? $fileName : $setting->value;
+                    $fileName = str_slug($setting->key) . '-' . $language->iso_code . '.' . $file->getClientOriginalExtension();
+                    $file->move($path, $fileName);
+
+                    $translations[$language->iso_code] = [
+                        'value' => $fileName
+                    ];
+                }
+            } else {
+                $file = $files;
+                if (!$file) {
+                    return back()->withErrors('File is required.');
+                }
+
+                $fileName = str_slug($setting->key) . '.' . $file->getClientOriginalExtension();
+                $file->move($path, $fileName);
+
+                foreach (get_all_languages() as $language) {
+                    $translations[$language->iso_code] = [
+                        'value' => $fileName
+                    ];
+                }
+            }
         }
 
-        $setting->update(['value' => $request->value]);
+        $setting->updateTranslations($translations);
 
         setting()->clear_cache();
 

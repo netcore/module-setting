@@ -1,0 +1,1 @@
+{!! Form::select(isset($language) ? 'translations['.$language->iso_code.'][value]' : 'value', $setting->getOptionsData(), isset($language) ? trans_model($setting, $language, 'value') : $setting->value, $setting->getAttributesData()) !!}
