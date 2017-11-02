@@ -5,8 +5,9 @@
     composer require netcore/module-setting
 ```
 
- - Publish configuration
+ - Publish migrations/configuration
 ```
+    php artisan module:publish-migration Setting
     php artisan module:publish-config Setting
 ```
  
