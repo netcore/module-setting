@@ -19,46 +19,46 @@ class SettingTableSeeder extends Seeder
 
         $settings = [
             [
-                'group' => 'custom-scripts',
+                'group' => 'scripts',
                 'name'  => 'Google Analytics API key',
-                'key'   => 'google-analytics-api-key',
+                'key'   => 'google_analytics_api_key',
                 'type'  => 'text',
             ],
             [
-                'group' => 'custom-scripts',
+                'group' => 'scripts',
                 'name'  => 'Google Analytics client ID',
-                'key'   => 'google-analytics-client-id',
+                'key'   => 'google_analytics_client_id',
                 'type'  => 'text',
             ],
             [
-                'group' => 'custom-scripts',
+                'group' => 'scripts',
                 'name'  => 'Google Analytics script',
-                'key'   => 'google-analytics-script',
+                'key'   => 'google_analytics_script',
                 'type'  => 'textarea',
             ],
             [
-                'group' => 'custom-scripts',
-                'name'  => 'Custom scripts',
-                'key'   => 'custom-js',
+                'group' => 'scripts',
+                'name'  => 'Custom javascripts',
+                'key'   => 'custom_js',
                 'type'  => 'textarea',
             ],
             [
-                'group' => 'custom-scripts',
+                'group' => 'scripts',
                 'name'  => 'Custom styles',
-                'key'   => 'custom-css',
+                'key'   => 'custom_css',
                 'type'  => 'textarea'
             ],
 
             [
                 'group' => 'seo',
                 'name'  => 'Meta keywords',
-                'key'   => 'meta-keywords',
+                'key'   => 'meta_keywords',
                 'type'  => 'textarea',
             ],
             [
                 'group' => 'seo',
                 'name'  => 'Meta description',
-                'key'   => 'meta-description',
+                'key'   => 'meta_description',
                 'type'  => 'textarea',
             ],
 
@@ -66,31 +66,31 @@ class SettingTableSeeder extends Seeder
             [
                 'group' => 'seo',
                 'name'  => 'OG title',
-                'key'   => 'og:title',
+                'key'   => 'og_title',
                 'type'  => 'text',
             ],
             [
                 'group' => 'seo',
                 'name'  => 'OG type',
-                'key'   => 'og:type',
+                'key'   => 'og_type',
                 'type'  => 'text',
             ],
             [
                 'group' => 'seo',
                 'name'  => 'OG URL',
-                'key'   => 'og:url',
+                'key'   => 'og_url',
                 'type'  => 'text',
             ],
             [
                 'group' => 'seo',
                 'name'  => 'OG description',
-                'key'   => 'og:description',
+                'key'   => 'og_description',
                 'type'  => 'textarea'
             ],
             [
                 'group' => 'seo',
                 'name'  => 'OG image',
-                'key'   => 'og:image',
+                'key'   => 'og_image',
                 'type'  => 'text'
             ],
 
@@ -98,31 +98,31 @@ class SettingTableSeeder extends Seeder
             [
                 'group' => 'seo',
                 'name'  => 'Twitter Card title',
-                'key'   => 'twitter:title',
+                'key'   => 'twitter_title',
                 'type'  => 'text',
             ],
             [
                 'group' => 'seo',
                 'name'  => 'Twitter Card site',
-                'key'   => 'twitter:site',
+                'key'   => 'twitter_site',
                 'type'  => 'text',
             ],
             [
                 'group' => 'seo',
                 'name'  => 'Twitter Card type',
-                'key'   => 'twitter:card',
+                'key'   => 'twitter_card',
                 'type'  => 'text',
             ],
             [
                 'group' => 'seo',
                 'name'  => 'Twitter Card description',
-                'key'   => 'twitter:description',
+                'key'   => 'twitter_description',
                 'type'  => 'textarea'
             ],
             [
                 'group' => 'seo',
                 'name'  => 'Twitter Card image',
-                'key'   => 'twitter:image',
+                'key'   => 'twitter_image',
                 'type'  => 'text'
             ],
         ];
