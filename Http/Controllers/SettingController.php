@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
 use Modules\Setting\Models\Setting;
+use Netcore\Translator\Helpers\TransHelper;
 use Nwidart\Modules\Facades\Module;
 
 class SettingController extends Controller
@@ -44,7 +45,7 @@ class SettingController extends Controller
 
         // Set universal value across all languages
         if (!$setting->is_translatable && !$setting->is('file')) {
-            foreach (get_all_languages() as $language) {
+            foreach (TransHelper::getAllLanguages() as $language) {
                 $translations[$language->iso_code] = [
                     'value' => $request->get('value', '')
                 ];
@@ -68,7 +69,7 @@ class SettingController extends Controller
             }
 
             if ($setting->is_translatable) {
-                foreach (get_all_languages() as $language) {
+                foreach (TransHelper::getAllLanguages() as $language) {
                     $file = isset($files[$language->iso_code]) ? $files[$language->iso_code]['value'] : null;
                     if (!$file) {
                         continue;
@@ -90,7 +91,7 @@ class SettingController extends Controller
                 $fileName = str_slug($setting->key) . '.' . $file->getClientOriginalExtension();
                 $file->move($path, $fileName);
 
-                foreach (get_all_languages() as $language) {
+                foreach (TransHelper::getAllLanguages() as $language) {
                     $translations[$language->iso_code] = [
                         'value' => $fileName
                     ];
