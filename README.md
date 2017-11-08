@@ -1,3 +1,14 @@
+## Description
+This module was made for easy management of settings
+
+## Pre-installation
+
+This package is part of Netcore CMS ecosystem and is only functional in a project that has following packages
+installed:
+
+1. https://github.com/netcore/netcore
+2. https://github.com/netcore/module-admin
+
 ### Installation
 
  - Require this package using composer
@@ -5,25 +16,16 @@
     composer require netcore/module-setting
 ```
 
- - Publish migrations/configuration
+ - Publish configuration/migrations
 ```
-    php artisan module:publish-migration Setting
     php artisan module:publish-config Setting
+    php artisan module:publish-migration Setting
+    php artisan migrate
 ```
  
 ### Configuration
 
- - Cache key name
-```
-    // Default key is - settings
-    'cache_key' => 'settings'
-```
-
- - Upload path for file type
-```
-    // Default path is - /uploads/settings
-    'upload_path' => '/uploads/settings'
-```
+ - Configuration file is available at config/netcore/module-setting.php
 
 ### Seeding settings
 
