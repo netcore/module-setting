@@ -38,7 +38,6 @@ installed:
             'group' => 'global',
             'name'  => 'Name',
             'key'   => 'key',
-            'value' => 'value',
             'type'  => 'select', // Available types: text, textarea, select, checkbox, file
             'meta'  => [
                 // Here you can specify what HTML attributes you want for this input
@@ -58,7 +57,13 @@ installed:
     ];
 	
     foreach ($settings as $setting) {
-        Setting::create($setting);
+        $row = Setting::create($setting);
+        
+        $row->storeTranslations([
+            'en' => [
+                'value' => 'value'
+            ]
+        ]);
     }
 ```
 
