@@ -70,7 +70,7 @@ class SettingServiceProvider extends ServiceProvider
 
         $this->loadViewsFrom(array_merge(array_map(function ($path) {
             return $path . '/modules/setting';
-        }, \Config::get('view.paths')), [$sourcePath]), 'setting');
+        }, config('view.paths')), [$sourcePath]), 'setting');
     }
 
     /**
