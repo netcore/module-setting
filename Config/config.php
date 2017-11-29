@@ -115,6 +115,44 @@ return [
             'name'  => 'Twitter Card image',
             'key'   => 'twitter_image',
             'type'  => 'text'
+        ],
+
+        // Mail
+        [
+            'group' => 'mail',
+            'name'  => 'Mail server host',
+            'key'   => 'mail_host',
+            'type'  => 'text'
+        ],
+        [
+            'group' => 'mail',
+            'name'  => 'Mail server port',
+            'key'   => 'mail_port',
+            'type'  => 'text'
+        ],
+        [
+            'group' => 'mail',
+            'name'  => 'Mail server username',
+            'key'   => 'mail_user',
+            'type'  => 'text'
+        ],
+        [
+            'group' => 'mail',
+            'name'  => 'Mail server password',
+            'key'   => 'mail_password',
+            'type'  => 'text'
+        ],
+        [
+            'group' => 'mail',
+            'name'  => 'Email address from which to send emails',
+            'key'   => 'mail_from_address',
+            'type'  => 'text'
+        ],
+        [
+            'group' => 'mail',
+            'name'  => 'Name from which to send emails',
+            'key'   => 'mail_from_name',
+            'type'  => 'text'
         ]
     ]
 ];
