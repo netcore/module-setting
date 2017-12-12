@@ -95,6 +95,7 @@ class SettingRepository
 
     /**
      * @return bool
+     * @throws \Exception
      */
     public function clear_cache()
     {

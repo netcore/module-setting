@@ -24,6 +24,7 @@ class SettingController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
+     * @param Setting $setting
      * @return Response
      */
     public function edit(Setting $setting)
@@ -37,6 +38,7 @@ class SettingController extends Controller
      * Update the specified resource in storage.
      *
      * @param  Request $request
+     * @param Setting  $setting
      * @return Response
      */
     public function update(Request $request, Setting $setting)

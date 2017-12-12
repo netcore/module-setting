@@ -3,7 +3,7 @@
 
     <!-- Tab panes -->
     <div class="tab-content">
-        @foreach(get_all_languages() as $language)
+        @foreach(\Netcore\Translator\Helpers\TransHelper::getAllLanguages() as $language)
             <div role="tabpanel" class="tab-pane {{ $loop->first ? 'active' : '' }}"
                  id="{{ $language->iso_code }}">
 
