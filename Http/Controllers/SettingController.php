@@ -49,7 +49,7 @@ class SettingController extends Controller
         if (!$setting->is_translatable && !$setting->is('file')) {
             foreach (TransHelper::getAllLanguages() as $language) {
                 $translations[$language->iso_code] = [
-                    'value' => $request->get('value', '')
+                    'value' => $request->get('value') ?: ''
                 ];
             }
         }
