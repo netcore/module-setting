@@ -4,8 +4,8 @@ namespace Modules\Setting\Models;
 
 use Dimsav\Translatable\Translatable;
 use Illuminate\Database\Eloquent\Model;
-use Modules\Admin\Traits\SyncTranslations;
 use Modules\Setting\Translations\SettingTranslation;
+use Modules\Translate\Traits\SyncTranslations;
 
 class Setting extends Model
 {
@@ -60,11 +60,11 @@ class Setting extends Model
     {
         $attributes = array_get($this->meta, 'attributes', []);
 
-        if (!is_array($attributes)) {
+        if (! is_array($attributes)) {
             $attributes = [];
         }
 
-        if (!isset($attributes['class'])) {
+        if (! isset($attributes['class'])) {
             $attributes['class'] = $this->getClass();
         }
 
@@ -85,7 +85,7 @@ class Setting extends Model
             $options = $options();
         }
 
-        if (!is_array($options)) {
+        if (! is_array($options)) {
             return [];
         }
 
