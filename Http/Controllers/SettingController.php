@@ -7,6 +7,7 @@ use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
 use Modules\Setting\Models\Setting;
 use Netcore\Translator\Helpers\TransHelper;
+use Netcore\Translator\Models\Language;
 use Nwidart\Modules\Facades\Module;
 
 class SettingController extends Controller
@@ -37,16 +38,29 @@ class SettingController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  Request $request
-     * @param Setting  $setting
-     * @return Response
+     * @param Request       $request
+     * @param Setting       $setting
+     * @param Language|null $language
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function update(Request $request, Setting $setting)
+    public function update(Request $request, Setting $setting, Language $language = null)
     {
+        if ($setting->is_translatable && $language) {
+            $translations[$language->iso_code]['value'] = $request->get('value', '');
+
+            $setting->updateTranslations($translations);
+
+            setting()->clear_cache();
+
+            return response()->json([
+                'status' => 'success'
+            ]);
+        }
+
         $translations = $request->get('translations', []);
 
         // Set universal value across all languages
-        if (!$setting->is_translatable && !$setting->is('file')) {
+        if (! $setting->is_translatable && ! $setting->is('file')) {
             foreach (TransHelper::getAllLanguages() as $language) {
                 $translations[$language->iso_code] = [
                     'value' => $request->get('value', '')
@@ -66,14 +80,14 @@ class SettingController extends Controller
             $files = $setting->is_translatable ? $request->file('translations') : $request->file('value');
 
             $path = public_path(config('setting.upload_path'));
-            if (!\File::exists($path)) {
+            if (! \File::exists($path)) {
                 \File::makeDirectory($path, 0775, true);
             }
 
             if ($setting->is_translatable) {
                 foreach (TransHelper::getAllLanguages() as $language) {
                     $file = isset($files[$language->iso_code]) ? $files[$language->iso_code]['value'] : null;
-                    if (!$file) {
+                    if (! $file) {
                         continue;
                     }
 
@@ -86,7 +100,7 @@ class SettingController extends Controller
                 }
             } else {
                 $file = $files;
-                if (!$file) {
+                if (! $file) {
                     return back()->withErrors('File is required.');
                 }
 
@@ -105,6 +119,12 @@ class SettingController extends Controller
 
         setting()->clear_cache();
 
-        return back()->withSuccess('Successfully saved');
+        if ($request->ajax()) {
+            return response()->json([
+                'status' => 'success'
+            ]);
+        }
+
+        return redirect()->route('admin::setting.index')->withSuccess('Successfully saved');
     }
 }

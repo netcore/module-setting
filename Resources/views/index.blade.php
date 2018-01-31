@@ -8,11 +8,13 @@
                     <h4 class="panel-title">Settings</h4>
                 </div>
                 <div class="panel-body">
+                    @include('admin::_partials._messages')
                     @if (setting()->grouped()->count())
                         <ul class="nav nav-tabs" role="tablist">
                             @foreach (setting()->grouped() as $group => $settings)
                                 <li role="presentation" class="{{ $loop->first ? 'active' : '' }}">
-                                    <a href="#{{ $group }}" aria-controls="global" role="tab" data-toggle="tab">{{ ucfirst(preg_replace('/-+/', ' ', $group)) }}</a>
+                                    <a href="#{{ $group }}" aria-controls="global" role="tab"
+                                       data-toggle="tab">{{ ucfirst(preg_replace('/-+/', ' ', $group)) }}</a>
                                 </li>
                             @endforeach
                         </ul>
@@ -26,8 +28,7 @@
                                         <tr>
                                             <th>Key</th>
                                             <th>Name</th>
-                                            <th>Value</th>
-                                            <th class="text-center">Actions</th>
+                                            <th class="text-center">Value/Actions</th>
                                         </tr>
                                         </thead>
                                         <tbody>
@@ -36,23 +37,47 @@
                                                 <td width="30%">{{ $setting->key }}</td>
                                                 <td>{{ $setting->name }}</td>
                                                 <td>
-                                                    @if($setting->type == 'checkbox')
-                                                        {{ $setting->value ? 'Yes' : 'No' }}
+                                                    @if($setting->is('checkbox'))
+                                                        <a href="#" id="{{ $setting->key }}" data-type="select"
+                                                           data-url="{{ route('admin::setting.update', $setting->id) }}"
+                                                           data-pk="{{ $setting->id }}"
+                                                           data-source="[{value: 0, text: 'No'}, {value: 1, text: 'Yes'}]"
+                                                           data-title="Enter value"
+                                                           class="x-edit editable editable-click">{{ $setting->value ? 'Yes' : 'No' }}</a>
+                                                    @elseif ($setting->is('file'))
+                                                        <a href="{{ route('admin::setting.edit', $setting) }}"
+                                                           class="btn btn-xs btn-primary">
+                                                            <i class="fa fa-edit"></i> Edit
+                                                        </a>
+                                                    @elseif ($setting->has_manager)
+                                                        <a href="{{ route('admin::setting.edit', $setting) }}"
+                                                           class="btn btn-xs btn-primary">
+                                                            <i class="fa fa-edit"></i> Edit
+                                                        </a>
                                                     @else
                                                         @if ($setting->is_translatable)
                                                             @php
                                                                 $translations = $setting->translations->pluck('value', 'locale')->toArray();
                                                             @endphp
                                                             @foreach(\Netcore\Translator\Helpers\TransHelper::getAllLanguages() as $language)
-                                                                <b>{{ strtoupper($language->iso_code) }}</b>: {{ isset($translations[$language->iso_code]) ? str_limit($translations[$language->iso_code], 100) : 'Not specified' }}<br>
+                                                                <b>{{ strtoupper($language->iso_code) }}</b>:
+                                                                <a
+                                                                        href="#" id="{{ $setting->key }}"
+                                                                        data-type="{{ $setting->type }}"
+                                                                        data-url="{{ route('admin::setting.update', [$setting->id, $language]) }}"
+                                                                        data-pk="{{ $setting->id }}"
+                                                                        data-title="Enter value"
+                                                                        class="x-edit editable editable-click">{{ isset($translations[$language->iso_code]) ? str_limit($translations[$language->iso_code], 100) : 'Not specified' }}</a>
+                                                                <br>
                                                             @endforeach
                                                         @else
-                                                            {{ str_limit($setting->value, 100) }}
+                                                            <a href="#" id="{{ $setting->key }}"
+                                                               data-type="{{ $setting->type }}"
+                                                               data-url="{{ route('admin::setting.update', $setting->id) }}"
+                                                               data-pk="{{ $setting->id }}" data-title="Enter value"
+                                                               class="x-edit editable editable-click">{{ str_limit($setting->value, 100) }}</a>
                                                         @endif
                                                     @endif
-                                                </td>
-                                                <td width="10%" class="text-center">
-                                                    <a href="{{ route('admin::setting.edit', $setting) }}" class="btn btn-xs btn-primary"><i class="fa fa-edit"></i> Edit</a>
                                                 </td>
                                             </tr>
                                         @endforeach
@@ -68,4 +93,18 @@
             </div>
         </div>
     </div>
+@endsection
+
+@section('scripts')
+    <script type="text/javascript">
+
+        $.fn.editable.defaults.ajaxOptions = {
+            type: 'PATCH'
+        };
+
+        $(document).ready(function () {
+            $('.x-edit').editable();
+        });
+
+    </script>
 @endsection

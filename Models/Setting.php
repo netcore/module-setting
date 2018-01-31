@@ -107,7 +107,11 @@ class Setting extends Model
     public function getValue()
     {
         if ($this->is('file')) {
-            return asset($this->value);
+            return asset(config('netcore.module-setting.upload_path') . '/' . $this->value);
+        }
+
+        if ($this->is('checkbox')) {
+            return $this->value === '1';
         }
 
         return $this->value;

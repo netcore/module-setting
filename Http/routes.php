@@ -5,16 +5,7 @@ Route::group([
     'prefix'     => 'admin',
     'namespace'  => 'Modules\Setting\Http\Controllers'
 ], function () {
-    Route::resource('settings', 'SettingController', [
-        'only'  => [
-            'index',
-            'edit',
-            'update'
-        ],
-        'names' => [
-            'index'  => 'admin::setting.index',
-            'edit'   => 'admin::setting.edit',
-            'update' => 'admin::setting.update'
-        ]
-    ]);
+    Route::get('settings', ['as' => 'admin::setting.index', 'uses' => 'SettingController@index']);
+    Route::get('settings/{setting}/edit', ['as' => 'admin::setting.edit', 'uses' => 'SettingController@edit']);
+    Route::patch('settings/{setting}/{language?}', ['as' => 'admin::setting.update', 'uses' => 'SettingController@update']);
 });
