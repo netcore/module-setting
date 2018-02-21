@@ -42,8 +42,16 @@
                                                            data-url="{{ route('admin::setting.update', $setting->id) }}"
                                                            data-pk="{{ $setting->id }}"
                                                            data-source="[{value: 0, text: 'No'}, {value: 1, text: 'Yes'}]"
-                                                           data-title="Enter value"
+                                                           data-title="Select value"
                                                            class="x-edit editable editable-click">{{ $setting->value ? 'Yes' : 'No' }}</a>
+                                                    @elseif ($setting->is('select'))
+                                                        <a href="#" id="{{ $setting->key }}" data-type="select"
+                                                           data-url="{{ route('admin::setting.update', $setting->id) }}"
+                                                           data-pk="{{ $setting->id }}"
+                                                           data-source="{{ json_encode($setting->getOptionsData()) }}"
+                                                           data-title="Select value"
+                                                           data-value="{{ $setting->value }}"
+                                                           class="x-edit editable editable-click">{{ array_get($setting->getOptionsData(), $setting->value) }}</a>
                                                     @elseif ($setting->is('file'))
                                                         <a href="{{ route('admin::setting.edit', $setting) }}"
                                                            class="btn btn-xs btn-primary">
