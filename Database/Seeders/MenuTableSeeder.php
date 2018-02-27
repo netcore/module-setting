@@ -18,47 +18,23 @@ class MenuTableSeeder extends Seeder
     {
         Model::unguard();
 
-        $menus = [
+        menu()->seedItems([
             'leftAdminMenu' => [
                 [
-                    'name'            => 'Settings',
+                    'name' => TransHelper::getAllLanguages()->mapWithKeys(function ($language) {
+                        return [$language->iso_code => 'Settings'];
+                    }),
+                    'value' => TransHelper::getAllLanguages()->mapWithKeys(function ($language) {
+                        return [$language->iso_code => 'admin::setting.index'];
+                    }),
                     'icon'            => 'ion-gear-b',
                     'type'            => 'route',
                     'is_active'       => 1,
-                    'value'           => 'admin::setting.index',
                     'active_resolver' => 'admin::setting.*',
                     'module'          => 'Setting',
                     'parameters'      => json_encode([])
                 ]
-            ]
-        ];
-
-        foreach ($menus as $key => $items) {
-            $menu = Menu::firstOrCreate([
-                'key' => $key
-            ]);
-
-            $translations = [];
-            foreach (TransHelper::getAllLanguages() as $language) {
-                $translations[$language->iso_code] = [
-                    'name' => ucwords(preg_replace(array('/(?<=[^A-Z])([A-Z])/', '/(?<=[^0-9])([0-9])/'), ' $0', $key))
-                ];
-            }
-            $menu->updateTranslations($translations);
-
-            foreach ($items as $item) {
-                $row = $menu->items()->firstOrCreate(array_except($item, ['name', 'value', 'parameters']));
-
-                $translations = [];
-                foreach (TransHelper::getAllLanguages() as $language) {
-                    $translations[$language->iso_code] = [
-                        'name'       => $item['name'],
-                        'value'      => $item['value'],
-                        'parameters' => $item['parameters']
-                    ];
-                }
-                $row->updateTranslations($translations);
-            }
-        }
+            ],
+        ]);
     }
 }

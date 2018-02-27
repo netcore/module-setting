@@ -19,18 +19,6 @@ class SettingTableSeeder extends Seeder
 
         $settings = config('netcore.module-setting.default_settings');
 
-        foreach ($settings as $data) {
-            $setting = Setting::firstOrCreate([
-                'key' => $data['key']
-            ], $data);
-
-            $translations = [];
-            foreach (\Netcore\Translator\Helpers\TransHelper::getAllLanguages() as $language) {
-                $translations[$language->iso_code] = [
-                    'value' => ''
-                ];
-            }
-            $setting->updateTranslations($translations);
-        }
+        setting()->seed($settings);
     }
 }

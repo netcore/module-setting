@@ -88,13 +88,17 @@ class SettingRepository
         }
 
         foreach ($data as $item) {
+            if (!isset($item['group'])) {
+                throw new \Exception('Group does not exist for key: ' . $item['key']);
+            }
+
             $item['key'] = implode('.', [
                 $item['group'],
                 $item['key']
             ]);
 
             $translations = [];
-            if (is_array($item['value'])) {
+            if (isset($item['value']) && is_array($item['value'])) {
                 foreach ($item['value'] as $locale => $value) {
                     $translations[$locale] = [
                         'value' => $value
@@ -103,7 +107,7 @@ class SettingRepository
             } else {
                 foreach (TransHelper::getAllLanguages() as $language) {
                     $translations[$language->iso_code] = [
-                        'value' => $item['value'],
+                        'value' => isset($item['value']) ? $item['value'] : '',
                     ];
                 }
             }
