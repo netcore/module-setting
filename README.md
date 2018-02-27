@@ -31,13 +31,17 @@ installed:
 ### Seeding settings
 
 ```php
-    use Modules\Setting\Models\Setting;
-	
     $settings = [
         [
             'group' => 'global',
             'name'  => 'Name',
             'key'   => 'key',
+            'value' => 'value', // This will set this value to all languages
+            // Or you can pass value as array and set different value in different language
+            // 'value' => [
+            //      'en' => 'value en',
+            //      'lv' => 'value lv',
+            // ],
             'type'  => 'select', // Available types: text, textarea, select, checkbox, file
             'meta'  => [
                 // Here you can specify what HTML attributes you want for this input
@@ -52,36 +56,33 @@ installed:
                     'one'  => 'One',
                     'two'  => 'Two'
                 ]
-            ]
+            ],
+            'is_translatable' => 0, // If you need different values for different languages, set this to 1(default is 0)
+            'has_manager'     => 0, // If you have module-media, you can set this to 1 and set setting value to selected file url
         ]
     ];
 	
-    foreach ($settings as $setting) {
-        $row = Setting::create($setting);
-        
-        $row->storeTranslations([
-            'en' => [
-                'value' => 'value'
-            ]
-        ]);
-    }
+    setting()->seed($settings);
 ```
 
 ### Usage
 
 ```php
     // Fetch setting by key
-    setting()->get('key');
+    setting()->get('global.key');
     
     // Optionally you can pass second parameter as the default value if the setting is not found
-    setting()->get('key', 'default');
+    setting()->get('global.key', 'default');
     
     // You can pass key variable as array to get multiple settings at once
-    setting()->get(['one', 'two']);
+    setting()->get(['global.one', 'global.two']);
     
     // Optionally you can pass second parameter as the default value as string or array and it will set defaults respectively
-    setting()->get(['one', 'two'], ['default_one', 'default_two']);
+    setting()->get(['global.one', 'global.two'], ['default_one', 'default_two']);
     
     // Fetch all settings
     setting()->all();
+    
+    // Fetch grouped settings
+    setting()->grouped();
 ```

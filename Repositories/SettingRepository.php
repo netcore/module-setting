@@ -3,60 +3,41 @@
 namespace Modules\Setting\Repositories;
 
 use Modules\Setting\Models\Setting;
+use Netcore\Translator\Helpers\TransHelper;
 
 class SettingRepository
 {
+    /**
+     * @var mixed
+     */
+    protected $cachedSettings;
 
     /**
-     * @var mixed|null
+     * @var \Illuminate\Config\Repository|mixed
      */
-    protected $cachedSettings = null;
-
-    /**
-     * @var \Illuminate\Config\Repository|mixed|null
-     */
-    protected $cacheKey = null;
-
-    /**
-     * @var string|null
-     */
-    protected $group = null;
+    protected $cacheKey;
 
     /**
      * SettingRepository constructor.
      */
     public function __construct()
     {
-        $this->cacheKey = config('setting.cache_key');
+        $this->cacheKey = config('setting.cache_key', 'settings');
         $this->cachedSettings = cache()->rememberForever($this->cacheKey, function () {
             return Setting::all()->keyBy('key');
         });
     }
 
     /**
-     * @param $method
-     * @param $args
-     * @return $this
-     */
-    public function __call($method, $args)
-    {
-        $this->group = $method;
-
-        return $this;
-    }
-
-    /**
-     * @param      $keys
-     * @param null $default
-     * @return mixed
+     * Get specified setting/s
+     *
+     * @param array|string $keys
+     * @param array|null   $default
+     * @return array|string
      */
     public function get($keys, $default = null)
     {
         $settings = $this->cachedSettings;
-
-        if ($group = $this->group) {
-            $settings = $settings->where('group', $group);
-        }
 
         if (is_array($keys)) {
             $array = [];
@@ -69,24 +50,24 @@ class SettingRepository
         }
 
         $setting = $settings->get($keys);
+
         return $setting ? $setting->getValue() : (is_array($default) ? (isset($default[0]) ? $default[0] : null) : $default);
     }
 
     /**
+     * Get all settings
+     *
      * @return array
      */
-    public function all()
+    public function all(): array
     {
-        $settings = $this->cachedSettings;
-        if ($this->group) {
-            $settings = $settings->where('group', $this->group);
-        }
-
-        return $settings->pluck('value', 'key')->toArray();
+        return $this->cachedSettings->pluck('value', 'key')->toArray();
     }
 
     /**
-     * @return mixed
+     * Get grouped settings
+     *
+     * @return array
      */
     public function grouped()
     {
@@ -94,10 +75,54 @@ class SettingRepository
     }
 
     /**
+     * Seed settings
+     *
+     * @param $data
+     * @return void
+     * @throws \Exception
+     */
+    public function seed($data)
+    {
+        if (!is_array($data)) {
+            throw new \Exception('Passed settings should be an array');
+        }
+
+        foreach ($data as $item) {
+            $item['key'] = implode('.', [
+                $item['group'],
+                $item['key']
+            ]);
+
+            $translations = [];
+            if (is_array($item['value'])) {
+                foreach ($item['value'] as $locale => $value) {
+                    $translations[$locale] = [
+                        'value' => $value
+                    ];
+                }
+            } else {
+                foreach (TransHelper::getAllLanguages() as $language) {
+                    $translations[$language->iso_code] = [
+                        'value' => $item['value'],
+                    ];
+                }
+            }
+
+            $setting = Setting::firstOrCreate([
+                'key' => $item['key']
+            ], array_except($item, 'value'));
+
+            $setting->updateTranslations($translations);
+        }
+    }
+
+    /**
+     * Clear cache
+     *
      * @return bool
      * @throws \Exception
      */
-    public function clear_cache()
+    public function clear_cache(): bool
     {
         return cache()->forget($this->cacheKey);
     }
