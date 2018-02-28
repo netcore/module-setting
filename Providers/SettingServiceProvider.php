@@ -2,6 +2,7 @@
 
 namespace Modules\Setting\Providers;
 
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Database\Eloquent\Factory;
 use Modules\Setting\Repositories\SettingRepository;
@@ -113,15 +114,23 @@ class SettingServiceProvider extends ServiceProvider
 
     /**
      * Set mail config
+     *
+     * @return void
      */
     private function setMailConfig()
     {
-        config(['mail.host' => setting()->get('mail.mail_host', '')]);
-        config(['mail.port' => setting()->get('mail.mail_port', '2525')]);
-        config(['mail.username' => setting()->get('mail.mail_user', '')]);
-        config(['mail.password' => setting()->get('mail.mail_password', '')]);
+        if (app()->runningInConsole()) {
+            return;
+        }
 
-        config(['mail.from.address' => setting()->get('mail.mail_from_address', '')]);
-        config(['mail.from.name' => setting()->get('mail.mail_from_name', '')]);
+        if (Schema::hasTable('netcore_setting__settings')) {
+            config(['mail.host' => setting()->get('mail.mail_host', '')]);
+            config(['mail.port' => setting()->get('mail.mail_port', '2525')]);
+            config(['mail.username' => setting()->get('mail.mail_user', '')]);
+            config(['mail.password' => setting()->get('mail.mail_password', '')]);
+
+            config(['mail.from.address' => setting()->get('mail.mail_from_address', '')]);
+            config(['mail.from.name' => setting()->get('mail.mail_from_name', '')]);
+        }
     }
 }
