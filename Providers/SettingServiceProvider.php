@@ -26,6 +26,7 @@ class SettingServiceProvider extends ServiceProvider
         $this->registerConfig();
         $this->registerViews();
         $this->registerFactories();
+        $this->setMailConfig();
     }
 
     /**
@@ -108,5 +109,19 @@ class SettingServiceProvider extends ServiceProvider
     public function provides()
     {
         return [];
+    }
+
+    /**
+     * Set mail config
+     */
+    private function setMailConfig()
+    {
+        config(['mail.host' => setting()->get('mail.mail_host', '')]);
+        config(['mail.port' => setting()->get('mail.mail_port', '2525')]);
+        config(['mail.username' => setting()->get('mail.mail_user', '')]);
+        config(['mail.password' => setting()->get('mail.mail_password', '')]);
+
+        config(['mail.from.address' => setting()->get('mail.mail_from_address', '')]);
+        config(['mail.from.name' => setting()->get('mail.mail_from_name', '')]);
     }
 }
