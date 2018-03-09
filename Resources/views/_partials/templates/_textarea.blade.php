@@ -1,0 +1,1 @@
+<textarea {{ $setting->getAttributesData() }}></textarea>

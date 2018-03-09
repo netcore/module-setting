@@ -83,7 +83,9 @@
                                                                data-type="{{ $setting->type }}"
                                                                data-url="{{ route('admin::setting.update', $setting->id) }}"
                                                                data-pk="{{ $setting->id }}" data-title="Enter value"
-                                                               class="x-edit editable editable-click">{{ str_limit($setting->value, 100) }}</a>
+                                                               class="x-edit editable editable-click"
+                                                               data-tpl="@include('setting::_partials.templates._' . $setting->type)"
+                                                            >{{ str_limit($setting->value, 100) }}</a>
                                                         @endif
                                                     @endif
                                                 </td>

@@ -18,13 +18,7 @@ class CreateNetcoreSettingSettingsTable extends Migration
             $table->string('group')->nullable();
             $table->string('name')->nullable();
             $table->string('key')->unique()->index();
-            $table->enum('type', [
-                'text',
-                'textarea',
-                'select',
-                'checkbox',
-                'file'
-            ])->default('text');
+            $table->string('type')->default('text');
             $table->text('meta')->nullable();
             $table->boolean('has_manager')->default(0);
             $table->boolean('is_translatable')->default(0);

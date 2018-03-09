@@ -68,7 +68,11 @@ class Setting extends Model
             $attributes['class'] = $this->getClass();
         }
 
-        return $attributes;
+        return implode(' ', array_map(
+            function ($v, $k) { return sprintf('%s="%s"', $k, $v); },
+            $attributes,
+            array_keys($attributes)
+        ));
     }
 
     /**
