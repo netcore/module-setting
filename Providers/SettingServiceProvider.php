@@ -119,18 +119,15 @@ class SettingServiceProvider extends ServiceProvider
      */
     private function setMailConfig()
     {
-        if (app()->runningInConsole()) {
-            return;
-        }
-
-        if (Schema::hasTable('netcore_setting__settings')) {
-            config(['mail.host' => setting()->get('mail.mail_host', '')]);
-            config(['mail.port' => setting()->get('mail.mail_port', '2525')]);
-            config(['mail.username' => setting()->get('mail.mail_user', '')]);
-            config(['mail.password' => setting()->get('mail.mail_password', '')]);
-
-            config(['mail.from.address' => setting()->get('mail.mail_from_address', '')]);
-            config(['mail.from.name' => setting()->get('mail.mail_from_name', '')]);
-        }
+        try {
+            config([
+                'mail.host' => setting()->get('mail.mail_host', ''),
+                'mail.port' => setting()->get('mail.mail_port', '2525'),
+                'mail.username' => setting()->get('mail.mail_user', ''),
+                'mail.password' => setting()->get('mail.mail_password', ''),
+                'mail.from.address' => setting()->get('mail.mail_from_address', ''),
+                'mail.from.name' => setting()->get('mail.mail_from_name', '')
+            ]);
+        } catch (\Exception $e) {}
     }
 }
