@@ -1,5 +1,21 @@
 @extends('admin::layouts.master')
 
+@section('styles')
+    <style>
+        .editable-text {
+            display: inline-block;
+            width: 500px;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+        }
+
+        a.editable-click, a.editable-click:hover {
+            border-bottom: none;
+        }
+    </style>
+@endsection
+
 @section('content')
     <div class="row">
         <div class="col-md-12">
@@ -34,9 +50,9 @@
                                         <tbody>
                                         @foreach($settings as $setting)
                                             <tr>
-                                                <td width="30%">{{ $setting->key }}</td>
-                                                <td>{{ $setting->name }}</td>
-                                                <td>
+                                                <td width="20%">{{ $setting->key }}</td>
+                                                <td width="20%">{{ $setting->name }}</td>
+                                                <td width="60%">
                                                     @if($setting->is('checkbox'))
                                                         <a href="#" id="{{ $setting->key }}" data-type="select"
                                                            data-url="{{ route('admin::setting.update', $setting->id) }}"
@@ -75,7 +91,7 @@
                                                                         data-url="{{ route('admin::setting.update', [$setting->id, $language]) }}"
                                                                         data-pk="{{ $setting->id }}"
                                                                         data-title="Enter value"
-                                                                        class="x-edit editable editable-click">{{ isset($translations[$language->iso_code]) ? str_limit($translations[$language->iso_code], 100) : 'Not specified' }}</a>
+                                                                        class="x-edit editable editable-click editable-text">{{ isset($translations[$language->iso_code]) ? $translations[$language->iso_code] : 'Not specified' }}</a>
                                                                 <br>
                                                             @endforeach
                                                         @else
@@ -83,9 +99,9 @@
                                                                data-type="{{ $setting->type }}"
                                                                data-url="{{ route('admin::setting.update', $setting->id) }}"
                                                                data-pk="{{ $setting->id }}" data-title="Enter value"
-                                                               class="x-edit editable editable-click"
+                                                               class="x-edit editable editable-click editable-text"
                                                                data-tpl="@include('setting::_partials.templates._' . $setting->type)"
-                                                            >{{ str_limit($setting->value, 100) }}</a>
+                                                            >{{ $setting->value }}</a>
                                                         @endif
                                                     @endif
                                                 </td>

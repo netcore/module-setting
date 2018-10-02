@@ -110,6 +110,10 @@ class Setting extends Model
      */
     public function getValue()
     {
+        if (!$this->is_translatable) {
+            return optional($this->translations->first())->value;
+        }
+
         if ($this->is('file')) {
             return asset(config('netcore.module-setting.upload_path') . '/' . $this->value);
         }
